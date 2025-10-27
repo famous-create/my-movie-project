@@ -1,0 +1,187 @@
+{
+  "cells": [
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "view-in-github",
+        "colab_type": "text"
+      },
+      "source": [
+        "<a href=\"https://colab.research.google.com/github/famous-create/my-movie-project/blob/main/touch.cuda.empty_cache()\" target=\"_parent\"><img src=\"https://colab.research.google.com/assets/colab-badge.svg\" alt=\"Open In Colab\"/></a>"
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "zLNHERijD0EA"
+      },
+      "source": [
+        "# 🎬 Open-Sora Video Generation Notebook\n",
+        "Generate short cinematic clips from JSON scenes stored in your GitHub repo.\n",
+        "---"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {
+        "id": "-DW4kQsQD0EJ"
+      },
+      "outputs": [],
+      "source": [
+        "# 1️⃣ Clone this GitHub repository (replace with your own)\n",
+        "!git clone https://github.com/YOUR_USERNAME/my-movie-project.git\n",
+        "%cd my-movie-project\n"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {
+        "id": "vcIeH_tVD0EL"
+      },
+      "outputs": [],
+      "source": [
+        "# 2️⃣ Install dependencies\n",
+        "%pip install -r requirements.txt\n",
+        "\n",
+        "# Optional: mount Google Drive for output storage\n",
+        "from google.colab import drive\n",
+        "drive.mount('/content/drive')\n",
+        "!mkdir -p /content/drive/MyDrive/WhispersBeyondField_outputs"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "%pip install torch transformers diffusers imageio moviepy tqdm accelerate"
+      ],
+      "metadata": {
+        "id": "A0fAxXqKF10L"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {
+        "id": "ieE-ArIjD0EM"
+      },
+      "outputs": [],
+      "source": [
+        "# 3️⃣ (Optional) Authenticate with Hugging Face for model weights\n",
+        "import os\n",
+        "HF_TOKEN = input('Enter your HuggingFace token: ')\n",
+        "os.environ['HF_TOKEN'] = HF_TOKEN"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {
+        "id": "6zsmU7JHD0EM"
+      },
+      "outputs": [],
+      "source": [
+        "# 4️⃣ Install / load Open-Sora or compatible model\n",
+        "!git clone https://github.com/hpcaitech/Open-Sora.git\n",
+        "%cd Open-Sora\n",
+        "%pip install -r requirements.txt"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {
+        "id": "Uc5Ux37HD0EN"
+      },
+      "outputs": [],
+      "source": [
+        "# 5️⃣ Load scene JSON\n",
+        "import json\n",
+        "with open('/content/my-movie-project/scene1.json','r') as f:\n",
+        "    scene = json.load(f)\n",
+        "prompt = scene['visual_prompt']\n",
+        "print('Prompt loaded:', prompt)"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {
+        "id": "w_uXFnegD0EO"
+      },
+      "outputs": [],
+      "source": [
+        "# 6️⃣ Generate the video\n",
+        "# Replace with actual Open-Sora command\n",
+        "# Example placeholder: !python /content/Open-Sora/scripts/generate.py --prompt \"{prompt}\" --output_path \"{out_path}\" --duration \"{scene['duration_sec']}\"\n",
+        "# You will need to replace the line below with the actual command based on your Open-Sora setup\n",
+        "print(\"from diffusers import DiffusionPipeline\n",
+        "import torch\n",
+        "\n",
+        "# Load Open-Sora model\n",
+        "model_id = \"hpcai-tech/Open-Sora\"\n",
+        "pipe = DiffusionPipeline.from_pretrained(model_id, torch_dtype=torch.float16)\n",
+        "pipe.to(\"cuda\")\n",
+        "\n",
+        "# Optional: use your scene JSON data\n",
+        "scene = {\n",
+        "    \"visual_prompt\": \"Foggy sunrise over a small African village farm. A teenage boy, Alex, walks through golden mist carrying a school bag. The atmosphere feels calm yet uneasy, cinematic lighting, soft camera movement, thriller tone.\",\n",
+        "    \"duration_sec\": 10\n",
+        "}\n",
+        "\n",
+        "# Generate 10-second video\n",
+        "video_frames = pipe(\n",
+        "    prompt=scene[\"visual_prompt\"],\n",
+        "    num_frames=scene[\"duration_sec\"] * 8,  # roughly 8 fps\n",
+        "    guidance_scale=7.5\n",
+        ").frames\n",
+        "\n",
+        "# Save the video\n",
+        "import imageio\n",
+        "video_path = \"/content/scene1.mp4\"\n",
+        "imageio.mimsave(video_path, video_frames, fps=8)\n",
+        "print(f\"✅ Video saved to: {video_path}\").\")"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "id": "f8d8a290"
+      },
+      "source": [
+        "from moviepy.editor import VideoFileClip\n",
+        "from IPython.display import HTML\n",
+        "\n",
+        "video_path = '/content/scene1.mp4'\n",
+        "clip = VideoFileClip(video_path)\n",
+        "clip.write_videofile('scene1_preview.mp4', codec='libx264')\n",
+        "\n",
+        "# Display the video\n",
+        "HTML(f\"\"\"\n",
+        "<video width=\"640\" height=\"360\" controls>\n",
+        "  <source src=\"scene1_preview.mp4\" type=\"video/mp4\">\n",
+        "</video>\n",
+        "\"\"\")"
+      ],
+      "execution_count": null,
+      "outputs": []
+    }
+  ],
+  "metadata": {
+    "colab": {
+      "provenance": [],
+      "toc_visible": true,
+      "include_colab_link": true
+    },
+    "kernelspec": {
+      "display_name": "Python 3",
+      "language": "python",
+      "name": "python3"
+    }
+  },
+  "nbformat": 4,
+  "nbformat_minor": 0
+}
