@@ -1,0 +1,13 @@
+{
+  "scene_id": "1",
+  "title": "Morning Shadows",
+  "duration_sec": 10,
+  "narration": "In the misty fields of Aremu Village, Alex wakes up before dawn, unaware of what’s buried beneath the old farmhouse.",
+  "visual_prompt": "Foggy sunrise over a small African village farm. A teenage boy, Alex, walks through golden mist carrying a school bag. The atmosphere feels calm yet uneasy, cinematic lighting, soft camera movement, thriller tone.",
+  "voice_gender": "female",
+  "subtitle_timing": [
+    {"start": 0, "end": 3, "text": "In the misty fields of Aremu Village..."},
+    {"start": 3, "end": 7, "text": "Alex wakes up before dawn..."},
+    {"start": 7, "end": 10, "text": "Unaware of what’s buried beneath the old farmhouse..."}
+  ]
+}
