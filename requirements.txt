@@ -1,0 +1,7 @@
+torch
+transformers
+diffusers
+imageio
+moviepy
+tqdm
+accelerate
